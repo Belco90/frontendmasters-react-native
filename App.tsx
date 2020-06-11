@@ -18,7 +18,7 @@ const App: React.FC = () => {
           options={{ title: '🏡 Home' }}
         />
         <RootStack.Screen
-          name="color-palette"
+          name="colorPalette"
           component={ColorPalette}
           options={({ route }) => ({ title: route.params.name })}
         />

@@ -1,6 +1,12 @@
-export type TColor = { colorName: string; hexCode: string };
+export type Color = { colorName: string; hexCode: string };
+
+export type ColorsPalette = {
+  id: number;
+  paletteName: string;
+  colors: Array<Color>;
+};
 
 export type RootStackParamList = {
   home: undefined;
-  'color-palette': { name: string; colors: Array<TColor> };
+  colorPalette: { name: string; colors: Array<Color> };
 };

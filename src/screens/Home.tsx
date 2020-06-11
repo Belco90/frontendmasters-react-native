@@ -1,9 +1,16 @@
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../models';
-import * as COLORS_PALETTES from '../colors-palettes';
+import { ColorsPalette, RootStackParamList } from '../models';
 import ColorPalettePreview from '../components/ColorPalettePreview';
+
+const readColorsPalettes: () => Promise<ColorsPalette[]> = async () => {
+  const resp = await fetch(
+    'https://color-palette-api.kadikraman.now.sh/palettes'
+  );
+
+  return await resp.json();
+};
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'home'>;
 
@@ -11,26 +18,62 @@ type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
-const Home: React.FC<Props> = ({ navigation }) => (
-  <FlatList
-    data={Object.values(COLORS_PALETTES)}
-    keyExtractor={(item, index) => index.toString()}
-    renderItem={({ item: colors, index }) => (
-      <ColorPalettePreview
-        name={Object.keys(COLORS_PALETTES)[index].replace('_COLORS', '')}
-        colors={colors.slice(0, 5)}
-        onPress={() =>
-          navigation.navigate('color-palette', {
-            name: Object.keys(COLORS_PALETTES)[index].replace('_COLORS', ''),
-            colors,
-          })
-        }
-      />
-    )}
-    style={styles.container}
-    ItemSeparatorComponent={() => <View style={styles.colorPaletteSeparator} />}
-  />
-);
+const Home: React.FC<Props> = ({ navigation }) => {
+  const [colorsPalettes, setColorsPalettes] = React.useState<
+    ColorsPalette[] | null
+  >(null);
+  const [isFetching, setIsFetching] = React.useState<boolean>(true);
+
+  React.useEffect(function fetchColorsPalettes() {
+    const getNewColorsPalettes = async () => {
+      setIsFetching(true);
+      const newColorsPalettes = await readColorsPalettes();
+      setColorsPalettes(newColorsPalettes);
+      setIsFetching(false);
+    };
+
+    getNewColorsPalettes();
+  }, []);
+
+  if (isFetching) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!colorsPalettes) {
+    return (
+      <View style={styles.container}>
+        <Text>No colors palettes found</Text>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={colorsPalettes}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item: palette }) => (
+        <ColorPalettePreview
+          name={palette.paletteName}
+          colors={palette.colors.slice(0, 5)}
+          onPress={() =>
+            navigation.navigate('colorPalette', {
+              name: palette.paletteName,
+              colors: palette.colors,
+            })
+          }
+        />
+      )}
+      style={styles.container}
+      ItemSeparatorComponent={() => (
+        <View style={styles.colorPaletteSeparator} />
+      )}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

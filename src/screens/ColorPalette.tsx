@@ -6,7 +6,7 @@ import { RouteProp } from '@react-navigation/native';
 
 type ColorPaletteScreenRouteProp = RouteProp<
   RootStackParamList,
-  'color-palette'
+  'colorPalette'
 >;
 
 type Props = {

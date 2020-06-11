@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { TColor } from '../models';
+import { Color } from '../models';
 
 type Props = {
   name: string;
-  colors: Array<TColor>;
+  colors: Array<Color>;
   onPress: () => void;
 };
 
