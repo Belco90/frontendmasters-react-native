@@ -1,19 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+import Home from './src/screens/Home';
+import ColorPalette from './src/screens/ColorPalette';
+import { RootStackParamList } from './src/models';
+
+const RootStack = createStackNavigator<RootStackParamList>();
+
+const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <NavigationContainer>
+      <RootStack.Navigator initialRouteName="home">
+        <RootStack.Screen
+          name="home"
+          component={Home}
+          options={{ title: '🏡 Home' }}
+        />
+        <RootStack.Screen
+          name="color-palette"
+          component={ColorPalette}
+          options={({ route }) => ({ title: route.params.name })}
+        />
+      </RootStack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
