@@ -4,23 +4,41 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Home from './src/screens/Home';
 import ColorPalette from './src/screens/ColorPalette';
-import { RootStackParamList } from './src/models';
+import ColorPaletteModal from './src/screens/ColorsPaletteModal';
+import { MainStackParamList, RootStackParamList } from './src/models';
 
 const RootStack = createStackNavigator<RootStackParamList>();
+const MainStack = createStackNavigator<MainStackParamList>();
+
+const MainStackScreen: React.FC = () => {
+  return (
+    <MainStack.Navigator initialRouteName="home">
+      <MainStack.Screen
+        name="home"
+        component={Home}
+        options={{ title: '🏡 Home' }}
+      />
+      <MainStack.Screen
+        name="colorPalette"
+        component={ColorPalette}
+        options={({ route }) => ({ title: route.params.name })}
+      />
+    </MainStack.Navigator>
+  );
+};
 
 const App: React.FC = () => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator initialRouteName="home">
+      <RootStack.Navigator mode="modal">
         <RootStack.Screen
-          name="home"
-          component={Home}
-          options={{ title: '🏡 Home' }}
+          name="main"
+          component={MainStackScreen}
+          options={{ headerShown: false }}
         />
         <RootStack.Screen
-          name="colorPalette"
-          component={ColorPalette}
-          options={({ route }) => ({ title: route.params.name })}
+          name="newColorPalette"
+          component={ColorPaletteModal}
         />
       </RootStack.Navigator>
     </NavigationContainer>

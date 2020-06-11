@@ -7,6 +7,11 @@ export type ColorsPalette = {
 };
 
 export type RootStackParamList = {
+  main: MainStackParamList;
+  newColorPalette: undefined;
+};
+
+export type MainStackParamList = {
   home: undefined;
   colorPalette: { name: string; colors: Array<Color> };
 };

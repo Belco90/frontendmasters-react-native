@@ -1,7 +1,18 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ColorsPalette, RootStackParamList } from '../models';
+import {
+  ColorsPalette,
+  RootStackParamList,
+  MainStackParamList,
+} from '../models';
 import ColorPalettePreview from '../components/ColorPalettePreview';
 
 const readColorsPalettes: () => Promise<ColorsPalette[]> = async () => {
@@ -12,7 +23,10 @@ const readColorsPalettes: () => Promise<ColorsPalette[]> = async () => {
   return await resp.json();
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'home'>;
+type HomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList & MainStackParamList,
+  'home'
+>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
@@ -61,8 +75,16 @@ const Home: React.FC<Props> = ({ navigation }) => {
           onRefresh={handleRefreshColorsPalettes}
         />
       }
+      ListHeaderComponent={() => (
+        <TouchableOpacity
+          style={styles.launchModalButtonWrapper}
+          onPress={() => navigation.navigate('newColorPalette')}
+        >
+          <Text style={styles.launchModalButtonText}>➕ Launch Modal</Text>
+        </TouchableOpacity>
+      )}
       ListEmptyComponent={() => (
-        <View style={styles.container}>
+        <View>
           <Text>Pull to refresh</Text>
         </View>
       )}
@@ -79,6 +101,13 @@ const styles = StyleSheet.create({
   },
   colorPaletteSeparator: {
     marginVertical: 15,
+  },
+  launchModalButtonWrapper: {
+    marginBottom: 15,
+  },
+  launchModalButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
