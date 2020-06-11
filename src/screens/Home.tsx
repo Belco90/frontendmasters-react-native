@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ColorsPalette, RootStackParamList } from '../models';
 import ColorPalettePreview from '../components/ColorPalettePreview';
@@ -22,34 +22,18 @@ const Home: React.FC<Props> = ({ navigation }) => {
   const [colorsPalettes, setColorsPalettes] = React.useState<
     ColorsPalette[] | null
   >(null);
-  const [isFetching, setIsFetching] = React.useState<boolean>(true);
+  const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
-  React.useEffect(function fetchColorsPalettes() {
-    const getNewColorsPalettes = async () => {
-      setIsFetching(true);
-      const newColorsPalettes = await readColorsPalettes();
-      setColorsPalettes(newColorsPalettes);
-      setIsFetching(false);
-    };
+  const handleRefreshColorsPalettes = async () => {
+    setIsFetching(true);
+    const newColorsPalettes = await readColorsPalettes();
+    setColorsPalettes(newColorsPalettes);
+    setIsFetching(false);
+  };
 
-    getNewColorsPalettes();
-  }, []);
-
-  if (isFetching) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (!colorsPalettes) {
-    return (
-      <View style={styles.container}>
-        <Text>No colors palettes found</Text>
-      </View>
-    );
-  }
+  // React.useEffect(function fetchColorsPalettes() {
+  //   handleRefreshColorsPalettes();
+  // }, []);
 
   return (
     <FlatList
@@ -71,16 +55,30 @@ const Home: React.FC<Props> = ({ navigation }) => {
       ItemSeparatorComponent={() => (
         <View style={styles.colorPaletteSeparator} />
       )}
+      refreshControl={
+        <RefreshControl
+          refreshing={isFetching}
+          onRefresh={handleRefreshColorsPalettes}
+        />
+      }
+      ListEmptyComponent={() => (
+        <View style={styles.container}>
+          <Text>Pull to refresh</Text>
+        </View>
+      )}
     />
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    backgroundColor: 'white',
   },
   colorPaletteSeparator: {
-    marginVertical: 5,
+    marginVertical: 15,
   },
 });
 

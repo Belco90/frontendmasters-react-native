@@ -17,7 +17,7 @@ type Props = {
 const ColorPalettePreview: React.FC<Props> = ({ name, onPress, colors }) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={styles.colorPreview}>
+      <View>
         <Text style={styles.colorHeading}>{name}</Text>
         <FlatList
           style={styles.colorsPreviewList}
@@ -35,11 +35,8 @@ const ColorPalettePreview: React.FC<Props> = ({ name, onPress, colors }) => {
 };
 
 const styles = StyleSheet.create({
-  colorPreview: {
-    padding: 20,
-  },
   colorHeading: {
-    marginBottom: 10,
+    marginBottom: 5,
     fontWeight: 'bold',
     textTransform: 'capitalize',
   },
