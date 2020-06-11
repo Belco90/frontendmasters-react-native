@@ -5,7 +5,7 @@ import {
   Text,
   View,
   RefreshControl,
-  TouchableOpacity,
+  Button,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
@@ -76,12 +76,12 @@ const Home: React.FC<Props> = ({ navigation }) => {
         />
       }
       ListHeaderComponent={() => (
-        <TouchableOpacity
-          style={styles.launchModalButtonWrapper}
-          onPress={() => navigation.navigate('newColorPalette')}
-        >
-          <Text style={styles.launchModalButtonText}>➕ Launch Modal</Text>
-        </TouchableOpacity>
+        <View style={styles.launchModalButtonWrapper}>
+          <Button
+            title="➕ Add colors scheme"
+            onPress={() => navigation.navigate('newColorPalette')}
+          />
+        </View>
       )}
       ListEmptyComponent={() => (
         <View>
