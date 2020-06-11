@@ -79,27 +79,6 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
   },
-  colorPreview: {
-    padding: 20,
-  },
-  colorHeading: {
-    marginBottom: 10,
-    fontWeight: 'bold',
-    textTransform: 'capitalize',
-  },
-  colorsPreviewList: {
-    flexDirection: 'row',
-  },
-  colorTile: {
-    height: 40,
-    width: 40,
-    marginRight: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 2,
-  },
   colorPaletteSeparator: {
     marginVertical: 5,
   },
