@@ -13,9 +13,14 @@ import { FormikProps, FormikErrors, withFormik } from 'formik';
 import COLORS_PRESET from '../colors-preset';
 import { Color } from '../models';
 
+enum FormFields {
+  name = 'name',
+  colors = 'colors',
+}
+
 interface FormValues {
-  name: string;
-  colors: Array<Color>;
+  [FormFields.name]: string;
+  [FormFields.colors]: Array<Color>;
 }
 
 const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
@@ -49,8 +54,8 @@ const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
       <View>
         <Text>Color scheme name</Text>
         <TextInput
-          onChangeText={handleChange('name')}
-          onBlur={handleBlur('name')}
+          onChangeText={handleChange(FormFields.name)}
+          onBlur={handleBlur(FormFields.name)}
           value={values.name}
           style={styles.input}
         />
@@ -76,7 +81,7 @@ const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
                     ({ colorName }) => colorName !== item.colorName
                   );
                 }
-                setFieldValue('colors', newColorsSelected);
+                setFieldValue(FormFields.colors, newColorsSelected);
               }}
             />
           </View>
