@@ -45,9 +45,9 @@ const Home: React.FC<Props> = ({ navigation }) => {
     setIsFetching(false);
   };
 
-  // React.useEffect(function fetchColorsPalettes() {
-  //   handleRefreshColorsPalettes();
-  // }, []);
+  React.useEffect(function fetchColorsPalettes() {
+    handleRefreshColorsPalettes();
+  }, []);
 
   return (
     <FlatList
