@@ -12,14 +12,14 @@ const MainStack = createStackNavigator<MainStackParamList>();
 
 const MainStackScreen: React.FC = () => {
   return (
-    <MainStack.Navigator initialRouteName="home">
+    <MainStack.Navigator initialRouteName="Home">
       <MainStack.Screen
-        name="home"
+        name="Home"
         component={Home}
         options={{ title: '🏡 Home' }}
       />
       <MainStack.Screen
-        name="colorPalette"
+        name="ColorsPaletteDetails"
         component={ColorPalette}
         options={({ route }) => ({ title: route.params.name })}
       />
@@ -32,12 +32,12 @@ const App: React.FC = () => {
     <NavigationContainer>
       <RootStack.Navigator mode="modal">
         <RootStack.Screen
-          name="main"
+          name="Main"
           component={MainStackScreen}
           options={{ headerShown: false }}
         />
         <RootStack.Screen
-          name="newColorPalette"
+          name="NewColorPalette"
           component={ColorPaletteModal}
           options={{ title: 'New color scheme' }}
         />

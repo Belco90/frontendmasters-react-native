@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { FormikProps, FormikErrors, withFormik } from 'formik';
 import COLORS_PRESET from '../colors-preset';
-import { Color } from '../models';
+import { AppStackParamList, Color } from '../models';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 enum FormFields {
   name = 'name',
@@ -23,7 +24,21 @@ interface FormValues {
   [FormFields.colors]: Array<Color>;
 }
 
-const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
+type NewColorPaletteScreenNavigationProp = StackNavigationProp<
+  AppStackParamList,
+  'NewColorPalette'
+>;
+
+type Props = {
+  navigation: NewColorPaletteScreenNavigationProp;
+};
+
+const getIsSwitchSelected = (values: FormValues, item: Color) =>
+  values.colors.some(
+    ({ colorName: selectedColorName }) => selectedColorName === item.colorName
+  );
+
+const ColorsPaletteModal = (props: Props & FormikProps<FormValues>) => {
   const {
     isValid,
     errors,
@@ -49,6 +64,20 @@ const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
     }
   };
 
+  const handleColorSwitchChange = (item: Color) => (isSelected: boolean) => {
+    const currentColors: Array<Color> = values.colors;
+    let newColorsSelected;
+
+    if (isSelected) {
+      newColorsSelected = [...currentColors, item];
+    } else {
+      newColorsSelected = currentColors.filter(
+        ({ colorName }) => colorName !== item.colorName
+      );
+    }
+    setFieldValue(FormFields.colors, newColorsSelected);
+  };
+
   return (
     <View style={styles.root}>
       <View>
@@ -66,23 +95,8 @@ const ColorsPaletteModal = (props: FormikProps<FormValues>) => {
           <View style={styles.colorOption}>
             <Text>{item.colorName}</Text>
             <Switch
-              value={values.colors.some(
-                ({ colorName: selectedColorName }: { colorName: string }) =>
-                  selectedColorName === item.colorName
-              )}
-              onValueChange={(isSelected) => {
-                const currentColors: Array<Color> = values.colors;
-                let newColorsSelected;
-
-                if (isSelected) {
-                  newColorsSelected = [...currentColors, item];
-                } else {
-                  newColorsSelected = currentColors.filter(
-                    ({ colorName }) => colorName !== item.colorName
-                  );
-                }
-                setFieldValue(FormFields.colors, newColorsSelected);
-              }}
+              value={getIsSwitchSelected(values, item)}
+              onValueChange={handleColorSwitchChange(item)}
             />
           </View>
         )}
@@ -125,8 +139,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withFormik<{}, FormValues>({
-  handleSubmit: (values) => console.log('onSubmit:', values),
+export default withFormik<Props, FormValues>({
+  handleSubmit: (values, { props }) => {
+    const { navigation } = props;
+    navigation.navigate('Home', {
+      newColorsPalette: { paletteName: values.name, colors: values.colors },
+    });
+  },
   mapPropsToValues: () => ({
     name: '',
     colors: [],

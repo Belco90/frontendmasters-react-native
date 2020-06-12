@@ -1,12 +1,12 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Swatch from '../components/Swatch';
-import { RootStackParamList, MainStackParamList } from '../models';
+import { AppStackParamList } from '../models';
 import { RouteProp } from '@react-navigation/native';
 
 type ColorPaletteScreenRouteProp = RouteProp<
-  RootStackParamList & MainStackParamList,
-  'colorPalette'
+  AppStackParamList,
+  'ColorsPaletteDetails'
 >;
 
 type Props = {

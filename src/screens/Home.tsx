@@ -8,12 +8,9 @@ import {
   Button,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import {
-  ColorsPalette,
-  RootStackParamList,
-  MainStackParamList,
-} from '../models';
+import { ColorsPalette, AppStackParamList } from '../models';
 import ColorPalettePreview from '../components/ColorPalettePreview';
+import { RouteProp } from '@react-navigation/native';
 
 const readColorsPalettes: () => Promise<ColorsPalette[]> = async () => {
   const resp = await fetch(
@@ -23,16 +20,15 @@ const readColorsPalettes: () => Promise<ColorsPalette[]> = async () => {
   return await resp.json();
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<
-  RootStackParamList & MainStackParamList,
-  'home'
->;
+type HomeScreenNavigationProp = StackNavigationProp<AppStackParamList, 'Home'>;
+type HomeScreenRouteProp = RouteProp<AppStackParamList, 'Home'>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
+  route: HomeScreenRouteProp;
 };
 
-const Home: React.FC<Props> = ({ navigation }) => {
+const Home: React.FC<Props> = ({ navigation, route }) => {
   const [colorsPalettes, setColorsPalettes] = React.useState<
     ColorsPalette[] | null
   >(null);
@@ -49,6 +45,21 @@ const Home: React.FC<Props> = ({ navigation }) => {
     handleRefreshColorsPalettes();
   }, []);
 
+  React.useEffect(
+    function insertNewColorsPalette() {
+      const newScheme = route.params?.newColorsPalette;
+      if (newScheme) {
+        setColorsPalettes((currentPalettes) => {
+          const newId = currentPalettes ? currentPalettes.length + 1 : 100;
+          const prevPalettes = currentPalettes || [];
+          const newPalette = { id: newId, ...newScheme };
+
+          return [newPalette, ...prevPalettes];
+        });
+      }
+    },
+    [route.params]
+  );
   return (
     <FlatList
       data={colorsPalettes}
@@ -58,7 +69,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
           name={palette.paletteName}
           colors={palette.colors.slice(0, 5)}
           onPress={() =>
-            navigation.navigate('colorPalette', {
+            navigation.navigate('ColorsPaletteDetails', {
               name: palette.paletteName,
               colors: palette.colors,
             })
@@ -67,7 +78,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
       )}
       style={styles.container}
       ItemSeparatorComponent={() => (
-        <View style={styles.colorPaletteSeparator} />
+        <View style={styles.ColorsPaletteDetailsSeparator} />
       )}
       refreshControl={
         <RefreshControl
@@ -79,7 +90,7 @@ const Home: React.FC<Props> = ({ navigation }) => {
         <View style={styles.launchModalButtonWrapper}>
           <Button
             title="➕ Add colors scheme"
-            onPress={() => navigation.navigate('newColorPalette')}
+            onPress={() => navigation.navigate('NewColorPalette')}
           />
         </View>
       )}
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: 'white',
   },
-  colorPaletteSeparator: {
+  ColorsPaletteDetailsSeparator: {
     marginVertical: 15,
   },
   launchModalButtonWrapper: {
